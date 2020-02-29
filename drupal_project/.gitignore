@@ -1,3 +1,4 @@
 vendor/
+web/modules/commerce_shipping
 .editorconfig
 .gitattributes
