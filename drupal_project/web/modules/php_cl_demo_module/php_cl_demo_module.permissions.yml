@@ -1,0 +1,4 @@
+administer php_cl_demo_module configuration:
+  title: 'Administer php_cl_demo_module configuration'
+  description: 'Optional description.'
+  restrict access: true

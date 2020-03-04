@@ -1,0 +1,15 @@
+php_cl_demo_module.example:
+  path: '/php-cl-demo-module/example'
+  defaults:
+    _title: 'Example'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::build'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.settings_form:
+  path: '/admin/config/system/php-cl-demo-module'
+  defaults:
+    _title: 'PHP-CL Demo Module settings'
+    _form: 'Drupal\php_cl_demo_module\Form\SettingsForm'
+  requirements:
+    _permission: 'administer php_cl_demo_module configuration'
