@@ -2,7 +2,15 @@ php_cl_demo_module.example:
   path: '/php-cl-demo-module/example'
   defaults:
     _title: 'Example'
-    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::build'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::example'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.location:
+  path: '/php-cl-demo-module/location/{city}/{code}'
+  defaults:
+    _title: 'Location'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::location'
   requirements:
     _permission: 'access content'
 
