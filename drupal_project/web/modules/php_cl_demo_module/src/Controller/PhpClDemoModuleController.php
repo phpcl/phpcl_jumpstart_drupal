@@ -27,11 +27,23 @@ class PhpClDemoModuleController extends ControllerBase {
    */
   public function location($city = 'Unknown', $code = 'CA') {
     $city = strip_tags($city);
-    $code = strtoupper(substr(strip_tags($country_code), 0, 2));
+    $code = strtoupper(substr(strip_tags($code), 0, 2));
     $output = 'City : ' . $city . '<br>Country: ' . $code;
     $build['content'] = [
       '#type' => 'item',
       '#markup' => $this->t($output),
+    ];
+    return $build;
+  }
+
+  /**
+   * Returns pagination information
+   */
+  public function pagination($page) {
+    $page = (int) $page;
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => $this->t('Page Number: ' . $page),
     ];
     return $build;
   }
