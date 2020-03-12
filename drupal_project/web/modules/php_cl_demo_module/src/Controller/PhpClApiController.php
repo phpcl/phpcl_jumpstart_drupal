@@ -19,13 +19,4 @@ class PhpClApiController extends ControllerBase {
         $result = ['status' => 'success', 'info' => __METHOD__, 'data' => $data];
         return new JsonResponse($result);
     }
-    /**
-     * Responds based on HTTP headers
-     */
-    public function headerTest()
-    {
-        $data = array_combine(range('A','F'), range(10,60,10));
-        $result = ['status' => 'success', 'info' => __METHOD__, 'data' => $data];
-        return new JsonResponse($result);
-    }
 }
