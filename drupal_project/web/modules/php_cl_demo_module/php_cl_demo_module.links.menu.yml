@@ -1,10 +1,7 @@
-# permanent menu links
-# see: https://www.drupal.org/docs/8/creating-custom-modules/add-a-menu-link
-
 php_cl_demo_module.menu_test:
     title: Test
     description: 'Permanent menu link test'
     route_name: php_cl_demo_module.test
-    parent: standard.front_page
-    weight: -99
+    menu_name: main
+    weight: 100
     enabled: 1

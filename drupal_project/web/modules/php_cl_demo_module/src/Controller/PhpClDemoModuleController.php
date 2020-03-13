@@ -36,6 +36,32 @@ class PhpClDemoModuleController extends ControllerBase {
   }
 
   /**
+   * Sub Test 1
+   */
+  public function subTest1() {
+
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => $this->t(__METHOD__),
+    ];
+
+    return $build;
+  }
+
+  /**
+   * Sub Test 2
+   */
+  public function subTest2() {
+
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => $this->t(__METHOD__),
+    ];
+
+    return $build;
+  }
+
+  /**
    * Returns information about city and country code
    */
   public function location($city = 'Unknown', $code = 'CA') {
