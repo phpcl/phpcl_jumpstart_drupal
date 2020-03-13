@@ -6,6 +6,14 @@ php_cl_demo_module.example:
   requirements:
     _permission: 'access content'
 
+php_cl_demo_module.test:
+  path: '/php-cl-demo-module/test'
+  defaults:
+    _title: 'Test'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::test'
+  requirements:
+    _permission: 'access content'
+
 php_cl_demo_module.location:
   path: '/php-cl-demo-module/location/{city}/{code}'
   defaults:
