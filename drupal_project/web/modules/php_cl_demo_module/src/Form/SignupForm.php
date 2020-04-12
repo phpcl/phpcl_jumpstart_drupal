@@ -33,7 +33,28 @@ class SignupForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-        // code to define form elements
+        // validators
+        $validators = [
+            'email' => function ($email) { return filter_var($email, FILTER_VALIDATE_EMAIL); },
+            // other validators not shown
+        ];
+        // filters
+        $filters = [
+            'email' => function ($email) { return strip_tags($email); },
+            // other filters not shown
+        ];
+        // form definition
+        $form = [
+            'email' => [
+                '#title'    => 'Email Address',
+                '#type'     => 'email',
+                '#required' => TRUE,
+                '#element_validate' => [ $validators['email'] ],
+                '#value_callback'   => [ $filters['email'] ],
+            ],
+            // other elements not shown
+        ];
+        return $form;
     }
 
     /**

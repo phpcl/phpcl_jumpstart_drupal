@@ -708,6 +708,7 @@ $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
  */
 $settings['trusted_host_patterns'] = [
   '^localhost$',
+  '^jumpstart.drupal.local$',
 ];
 
 /**
@@ -760,10 +761,10 @@ $settings['entity_update_backup'] = TRUE;
 # }
 $databases['default']['default'] = array (
   'database' => 'drupal',
-  'username' => 'test',
+  'username' => 'jumpstart',
   'password' => 'password',
   'prefix' => '',
-  'host' => '127.0.0.1',
+  'host' => 'localhost',
   'port' => '3306',
   'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
   'driver' => 'mysql',

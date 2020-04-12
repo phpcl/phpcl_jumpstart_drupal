@@ -2,24 +2,24 @@ version: "3"
 services:
   phpcl-jumpstart-drupal:
     container_name: phpcl_jumpstart_drupal
-    hostname: jumpstart-drupal
+    hostname: jumpstart
     image: asclinux/linuxforphp-8.2-ultimate:7.4-nts
     volumes:
      - ".:/srv/jumpstart"
-     - "./docker/httpd-vhosts.conf:/etc/httpd/extra/httpd-vhosts.conf"
+     - "./docker/hosts:/etc/hosts"
     ports:
-     - "8283:80"
-     - "10443:443"
-     - "2222:22"
+     - "8899:80"
+     - "9443:443"
+     - "2299:22"
     build: ./docker
     restart: always
-    command: lfphp --phpfpm --apache </dev/null >/dev/null 2&>1 &
+    command: lfphp --apache --mysql --phpfpm </dev/null >/dev/null 2&>1 &
     networks:
       app_net:
-        ipv4_address: 172.16.2.99
+        ipv4_address: 172.16.9.99
 networks:
   app_net:
     ipam:
       driver: default
       config:
-        - subnet: "172.16.2.0/24"
+        - subnet: "172.16.9.0/24"
