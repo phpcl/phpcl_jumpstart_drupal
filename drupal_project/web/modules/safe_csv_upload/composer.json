@@ -1,0 +1,15 @@
+{
+    "name": "safe_csv_upload",
+    "description": "Safely upload CSV files to a database",
+    "type": "module",
+    "license": "MIT",
+    "keywords": [
+        "drupal",
+        "module",
+        "csv",
+        "secure"
+    ],
+    "require": {
+        "php": "^7.2"
+    }
+}

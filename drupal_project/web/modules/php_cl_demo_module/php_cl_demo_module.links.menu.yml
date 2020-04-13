@@ -1,0 +1,7 @@
+php_cl_demo_module.menu_test:
+    title: Test
+    description: 'Permanent menu link test'
+    route_name: php_cl_demo_module.test
+    menu_name: main
+    weight: 100
+    enabled: 1

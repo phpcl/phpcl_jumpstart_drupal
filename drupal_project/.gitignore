@@ -1,3 +1,5 @@
 vendor/
+web/modules/commerce_shipping
 .editorconfig
 .gitattributes
+web/sites/default/files/php/twig/

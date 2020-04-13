@@ -1,0 +1,66 @@
+php_cl_demo_module.example:
+  path: '/php-cl-demo-module/example'
+  defaults:
+    _title: 'Example'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::example'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.test:
+  path: '/php-cl-demo-module/test'
+  defaults:
+    _title: 'Test'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::test'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.sub_test_1:
+  path: '/php-cl-demo-module/sub-test-1'
+  defaults:
+    _title: 'Sub Test 1'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::subTest1'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.sub_test_2:
+  path: '/php-cl-demo-module/sub-test-2'
+  defaults:
+    _title: 'Sub Test 2'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::subTest2'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.location:
+  path: '/php-cl-demo-module/location/{city}/{code}'
+  defaults:
+    _title: 'Location'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::location'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.pagination:
+  path: '/php-cl-demo-module/pagination/{page}'
+  defaults:
+    _title: 'Pagination'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::pagination'
+    page: 1
+  requirements:
+    _permission: 'access content'
+    page: '\d+'
+
+php_cl_demo_module.api.method-test:
+  path: '/php-cl-demo-module/api/method-test'
+  methods: ['POST']
+  defaults:
+    _title: 'Method Test'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClApiController::methodTest'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.settings_form:
+  path: '/admin/config/system/php-cl-demo-module'
+  defaults:
+    _title: 'PHP-CL Demo Module settings'
+    _form: 'Drupal\php_cl_demo_module\Form\SettingsForm'
+  requirements:
+    _permission: 'administer php_cl_demo_module configuration'
