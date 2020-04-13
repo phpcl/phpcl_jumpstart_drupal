@@ -33,9 +33,12 @@ class SignupForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-        // validators
+        // validation per element
         $validators = [
-            'email' => function ($email) { return filter_var($email, FILTER_VALIDATE_EMAIL); },
+            'email' => function ($email) use ($form_state) {
+                if (strlen($email) > 128)
+                    $form_state->setErrorByName('email', $this->t(self::ERROR_EMAIL_LEN));
+            },
             // other validators not shown
         ];
         // filters
@@ -68,6 +71,20 @@ class SignupForm extends FormBase
     public function validateForm(array &$form, FormStateInterface $form_state)
     {
         // code to validate submitted form data
+        $validators = [
+            'email' => function ($email) {
+                $valid = TRUE;
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $valid = FALSE;
+                    $form_state->setErrorByName('email', $this->t(self::ERROR_EMAIL));
+                }
+                return $valid;
+            },
+            // other validators not shown
+        ];
+        foreach ($form_state->getValues() as $key => $item) {
+            $validators[$key]();
+        }
     }
 
     /**
