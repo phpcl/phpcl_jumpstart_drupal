@@ -3,7 +3,7 @@ services:
   phpcl-jumpstart-drupal:
     container_name: phpcl_jumpstart_drupal
     hostname: jumpstart
-    image: asclinux/linuxforphp-8.2-ultimate:7.4-nts
+    image: phpcl/jumpstart_drupal
     volumes:
      - ".:/srv/jumpstart"
      - "./docker/hosts:/etc/hosts"

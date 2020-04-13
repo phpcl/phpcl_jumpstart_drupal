@@ -9,6 +9,12 @@ use Drupal\Core\Form\ {FormBase,FormStateInterface};
  */
 class SignupForm extends FormBase
 {
+
+    const SUCCESS_FORM    = 'SUCCESS: form submitted successfully';
+    const ERROR_EMAIL     = 'ERROR: invalid email address';
+    const ERROR_EMAIL_LEN = 'ERROR: email address needs to be 128 chars or less';
+    const DATA_DIR        = __DIR__ . '/../../../../data';
+
     /**
      * Returns a unique string identifying the form.
      *
@@ -97,7 +103,10 @@ class SignupForm extends FormBase
      */
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-        // code to process form data post-validation
+        $this->messenger()->addStatus($this->t(self::SUCCESS_FORM));
+        $fn = md5($form_state->getValue('email'));
+        $fn = str_replace('//', '/', self::DATA_DIR . '/' . $fn);
+        file_put_contents($fn, serialize($form_state->getValues()));
     }
 
 }
