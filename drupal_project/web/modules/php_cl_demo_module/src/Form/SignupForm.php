@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\php_cl_demo_module\Form;
 
 use Drupal\Core\Form\ {FormBase,FormStateInterface};
@@ -10,10 +9,14 @@ use Drupal\Core\Form\ {FormBase,FormStateInterface};
 class SignupForm extends FormBase
 {
 
-    const SUCCESS_FORM    = 'SUCCESS: form submitted successfully';
-    const ERROR_EMAIL     = 'ERROR: invalid email address';
-    const ERROR_EMAIL_LEN = 'ERROR: email address needs to be 128 chars or less';
-    const DATA_DIR        = __DIR__ . '/../../../../data';
+    const SUCCESS_FORM     = 'SUCCESS: form submitted successfully';
+    const ERROR_EMAIL      = 'ERROR: invalid email address';
+    const ERROR_EMAIL_LEN  = 'ERROR: email address needs to be 128 chars or less';
+    const ERROR_NAME_LEN   = 'ERROR: username needs to be 8 chars or less';
+    const ERROR_NAME_ALNUM = 'ERROR: username can only contain letters or numbers, no spaces';
+    const ERROR_GENDER     = 'ERROR: gender not listed';
+    const DATA_DIR         = __DIR__ . '/../../../../data';
+    const ALLOWED_GENDER   = ['M','F','X'];
 
     /**
      * Returns a unique string identifying the form.
@@ -41,27 +44,66 @@ class SignupForm extends FormBase
     {
         // validation per element
         $validators = [
-            'email' => function ($email) use ($form_state) {
+            'email' => function ($email, $form_state) {
                 if (strlen($email) > 128)
                     $form_state->setErrorByName('email', $this->t(self::ERROR_EMAIL_LEN));
+            },
+            'gender' => function ($gender, $form_state) {
+                if (!in_array($gender, self::ALLOWED_GENDER))
+                    $form_state->setErrorByName('gender', $this->t(self::ERROR_GENDER));
+            },
+            'test' => function ($test, $form_state) {
+                if (strpos($test, 'TEST') !== FALSE)
+                    $form_state->setErrorByName('test', __METHOD__);
             },
             // other validators not shown
         ];
         // filters
+        $stripTags = function ($val) { return strip_tags($val); };
         $filters = [
-            'email' => function ($email) { return strip_tags($email); },
+            'email'    => $stripTags,
+            'username' => $stripTags,
+            'test'     => $stripTags,
+            'gender'   => function ($list) {
+                foreach ($list as $key => $val) {
+                    $list[$key] = strtoupper(substr($val, 0, 1));
+                    return $list;
+                }
+            },
             // other filters not shown
         ];
         // form definition
         $form = [
+            'username' => [
+                '#title'    => $this->t('User Name'),
+                '#type'     => 'textfield',
+                '#required' => TRUE,
+                '#value_callback'   => [ $filters['username'] ],
+            ],
             'email' => [
-                '#title'    => 'Email Address',
+                '#title'    => $this->t('Email Address'),
                 '#type'     => 'email',
                 '#required' => TRUE,
                 '#element_validate' => [ $validators['email'] ],
                 '#value_callback'   => [ $filters['email'] ],
             ],
-            // other elements not shown
+            'gender' => [
+                '#title'    => $this->t('Gender'),
+                '#type'     => 'checkboxes',
+                '#options'  => ['M' => $this->t('Male'), 'F' => $this->t('Female'), 'X' => $this->t('Other')],
+                '#value_callback'   => [ $filters['gender'] ],
+            ],
+            'test' => [
+                '#title'    => $this->t('Test'),
+                '#type'     => 'textfield',
+                '#element_validate' => [ $validators['test'] ],
+                '#value_callback'   => [ $filters['test'] ],
+            ],
+            'submit' => [
+                '#title'    => $this->t('Submit'),
+                '#type'     => 'submit',
+                '#value'    => $this->t('Submit'),
+            ],
         ];
         return $form;
     }
@@ -78,18 +120,28 @@ class SignupForm extends FormBase
     {
         // code to validate submitted form data
         $validators = [
-            'email' => function ($email) {
-                $valid = TRUE;
+            'email' => function ($email, $form_state) {
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $valid = FALSE;
                     $form_state->setErrorByName('email', $this->t(self::ERROR_EMAIL));
                 }
-                return $valid;
             },
-            // other validators not shown
+            // username needs to be 8 chars or less, alpha numeric only
+            'username' => function ($name, $form_state) {
+                if (strlen($name) > 8) {
+                    $form_state->setErrorByName('username', $this->t(self::ERROR_NAME_LEN));
+                }
+                if (!ctype_alnum($name)) {
+                    $form_state->setErrorByName('username', $this->t(self::ERROR_NAME_ALNUM));
+                }
+            },
+            'test' => function ($test, $form_state) {
+                if (strpos($test, 'TEST') !== FALSE)
+                    $form_state->setErrorByName('test', __METHOD__);
+            },
         ];
         foreach ($form_state->getValues() as $key => $item) {
-            $validators[$key]();
+            if (isset($validators[$key]))
+                $validators[$key]($item, $form_state);
         }
     }
 

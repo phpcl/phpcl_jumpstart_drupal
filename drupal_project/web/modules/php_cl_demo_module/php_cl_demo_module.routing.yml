@@ -30,6 +30,14 @@ php_cl_demo_module.sub_test_2:
   requirements:
     _permission: 'access content'
 
+php_cl_demo_module.test.signup_form:
+  path: '/php-cl-demo-module/test/signup'
+  defaults:
+    _title: 'Test Signup Form'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::signup'
+  requirements:
+    _permission: 'access content'
+
 php_cl_demo_module.location:
   path: '/php-cl-demo-module/location/{city}/{code}'
   defaults:
@@ -54,6 +62,14 @@ php_cl_demo_module.api.method-test:
   defaults:
     _title: 'Method Test'
     _controller: '\Drupal\php_cl_demo_module\Controller\PhpClApiController::methodTest'
+  requirements:
+    _permission: 'access content'
+
+php_cl_demo_module.signup_form:
+  path: '/php-cl-demo-module/signup'
+  defaults:
+    _title: 'Signup Form'
+    _form: '\Drupal\php_cl_demo_module\Form\SignupForm'
   requirements:
     _permission: 'access content'
 

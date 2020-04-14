@@ -3,6 +3,7 @@
 namespace Drupal\php_cl_demo_module\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\php_cl_demo_module\Form\SignupForm;
 
 /**
  * Returns responses for PHP-CL Demo Module routes.
@@ -29,7 +30,7 @@ class PhpClDemoModuleController extends ControllerBase {
 
     $build['content'] = [
       '#type' => 'item',
-      '#markup' => $this->t(__METHOD__),
+      '#markup' => '<h1>Signup from Controller</h1><br><a href="/php-cl-demo-module/test/signup">Signup</a>',
     ];
 
     return $build;
@@ -85,6 +86,14 @@ class PhpClDemoModuleController extends ControllerBase {
       '#markup' => $this->t('Page Number: ' . $page),
     ];
     return $build;
+  }
+
+  /**
+   * Demonstrates using a form in a controller
+   */
+  public function signup() {
+    $form = \Drupal::formBuilder()->getForm(SignupForm::class);
+    return $form;
   }
 
 }
