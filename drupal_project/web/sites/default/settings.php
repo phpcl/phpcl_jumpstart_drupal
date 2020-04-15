@@ -759,7 +759,7 @@ $settings['entity_update_backup'] = TRUE;
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
-$databases['default']['default'] = array (
+$databases['default']['default'] = [
   'database' => 'drupal',
   'username' => 'jumpstart',
   'password' => 'password',
@@ -768,5 +768,16 @@ $databases['default']['default'] = array (
   'port' => '3306',
   'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
   'driver' => 'mysql',
-);
+];
+// config for "jumpstart" database access
+$databases['jumpstart']['default'] = [
+  'database' => 'jumpstart',
+  'username' => 'jumpstart',
+  'password' => 'password',
+  'prefix' => '',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+];
 $settings['config_sync_directory'] = 'sites/default/files/config_aQPBO57FDssioVDpcqSpNEZ546WBjDIoznXZjyosczO3RlfcFxL5jejS2jezpBR_UfkMVJDg8A/sync';

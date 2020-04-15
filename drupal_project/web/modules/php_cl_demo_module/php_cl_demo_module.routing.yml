@@ -6,6 +6,14 @@ php_cl_demo_module.example:
   requirements:
     _permission: 'access content'
 
+php_cl_demo_module.get_params:
+  path: '/php-cl-demo-module/test/get-params'
+  defaults:
+    _title: '$_GET Parameters'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::get_params'
+  requirements:
+    _permission: 'access content'
+
 php_cl_demo_module.test:
   path: '/php-cl-demo-module/test'
   defaults:

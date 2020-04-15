@@ -24,6 +24,19 @@ class PhpClDemoModuleController extends ControllerBase {
   }
 
   /**
+   * Demonstrates accessing $_GET params in a controller
+   */
+  public function get_params() {
+    $request = \Drupal::request();
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => get_class($request),
+    ];
+    return $build;
+  }
+
+
+  /**
    * Test
    */
   public function test() {
@@ -94,6 +107,25 @@ class PhpClDemoModuleController extends ControllerBase {
   public function signup() {
     $form = \Drupal::formBuilder()->getForm(SignupForm::class);
     return $form;
+  }
+
+  /**
+   * Demonstrates using a database connection in a controller
+   */
+  public function db_simple_query() {
+    /*
+    $conn = \Drupal\Core\Database\Database::getConnection('default', 'jumpstart');
+    try {
+        $sql = 'SELECT * FROM users';
+    } catch (\Exception $e) {
+        error_log(__METHOD__ . ':"
+    */
+    $request = \Drupal::request();
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => get_class($request),
+    ];
+    return $build;
   }
 
 }
