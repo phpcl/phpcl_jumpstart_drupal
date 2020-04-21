@@ -74,6 +74,18 @@ php_cl_demo_module.db_dynamic_query:
     _permission: 'access content'
     page: '\d+'
 
+php_cl_demo_module.db_dynamic_query_simple_condition:
+  path: '/php-cl-demo-module/db-dynamic-query-simple-condition/{page}/{start_date}/{end_date}'
+  defaults:
+    _title: 'Dynamic DB Query with Simple Condition'
+    _controller: '\Drupal\php_cl_demo_module\Controller\PhpClDemoModuleController::db_dynamic_query_simple_condition'
+    page: 0
+  requirements:
+    _permission: 'access content'
+    page: '\d+'
+    start_date: '\d{4}-\d{2}-\d{2}'
+    end_date: '\d{4}-\d{2}-\d{2}'
+
 php_cl_demo_module.api.method-test:
   path: '/php-cl-demo-module/api/method-test'
   methods: ['POST']

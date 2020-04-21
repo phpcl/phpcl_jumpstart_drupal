@@ -47,10 +47,16 @@ class PhpClDemoModuleController extends ControllerBase
    */
   public function test() {
 
+    $start_date = new \DateTime();
+    $end_date   = new \DateTime();
+    $end_date->add(new \DateInterval('P1Y'));
+    $startStr   = $start_date->format('Y-m-d');
+    $endStr     = $end_date->format('Y-m-d');
     $html = '<h1>Signup from Controller</h1>'
         . '<br><a href="/php-cl-demo-module/test/signup">Signup</a>'
         . '<br><a href="/php-cl-demo-module/db-simple-query">Simple DB Query</a>'
         . '<br><a href="/php-cl-demo-module/db-dynamic-query">Dynamic DB Query</a>'
+        . '<br><a href="/php-cl-demo-module/db-dynamic-query-simple-condition/0/' . $startStr . '/' . $endStr . '">Dynamic Query Simple Condition</a>'
         . '<br><a href="/php-cl-demo-module/test/get-params">Grab Parameters</a>';
 
     $build['content'] = [
@@ -162,9 +168,57 @@ class PhpClDemoModuleController extends ControllerBase
   public function db_dynamic_query($page = 0) {
     $output = '';
     try {
+        $limit = self::LINES_PER_PAGE;
+        $offset = $page * $limit;
         $conn = Database::getConnection('default', 'jumpstart');
-        $select = $conn->select('users');
-        $output = get_class($select);
+        $select = $conn->select('events', 'e');
+        $select->fields('e', ['event_name','event_date','hotel_id']);
+        $select->join('hotels','h','e.hotel_id = h.id');
+        $select->fields('h', ['hotelName','city','country']);
+        $select->orderBy('e.event_date', 'ASC');
+        $select->range($offset, $limit);
+        $stmt   = $select->execute();
+        $output .= '<hr><pre>';
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            array_walk($row, function (&$val) { $val = substr($val, 0, 15); });
+            $output .= vsprintf('%15s | %15s | %4d | %15s | %15s | %2s' . PHP_EOL, $row);
+        }
+        $output .= '</pre><hr><a href="/php-cl-demo-module/db-dynamic-query/' . ++$page . '">Next Page</a>';
+    } catch (\Exception $e) {
+        error_log(__METHOD__ . ':' . $e->getMessage());
+        $output = self::ERROR_DB;
+    }
+    $build['content'] = [
+      '#type' => 'item',
+      '#markup' => $output,
+    ];
+    return $build;
+  }
+
+  /**
+   * Dynamic query with simple conditions
+   */
+  public function db_dynamic_query_simple_condition($page = 0, $start_date, $end_date) {
+    $output = '';
+    try {
+        $limit = self::LINES_PER_PAGE;
+        $offset = $page * $limit;
+        $conn = Database::getConnection('default', 'jumpstart');
+        $select = $conn->select('events', 'e');
+        $select->fields('e', ['event_name','event_date']);
+        $select->orderBy('e.event_date', 'ASC');
+        $select->range($offset, $limit);
+        $select->condition('e.event_date', $start_date, '>=');
+        $select->condition('e.event_date', $end_date, '<');
+        $stmt   = $select->execute();
+        $output .= '<hr><pre>';
+        $output .= 'SQL: ' . $select;
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            $output .= sprintf('%25s | %20s' . PHP_EOL, $row);
+        }
+        $url = '/php-cl-demo-module/db-dynamic-query-simple-condition/'
+             . ++$page . '/' . $start_date . '/' . $end_date;
+        $output .= '</pre><hr><a href="' . $url . '">Next Page</a>';
     } catch (\Exception $e) {
         error_log(__METHOD__ . ':' . $e->getMessage());
         $output = self::ERROR_DB;
