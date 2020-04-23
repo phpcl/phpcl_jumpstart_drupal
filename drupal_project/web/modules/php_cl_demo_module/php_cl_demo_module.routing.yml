@@ -104,6 +104,15 @@ php_cl_demo_module.signup_form:
     _permission: 'access content'
 
 
+php_cl_demo_module.reschedule_form:
+  path: '/php-cl-demo-module/reschedule'
+  defaults:
+    _title: 'Reschedule Form'
+    _form: '\Drupal\php_cl_demo_module\Form\RescheduleForm'
+  requirements:
+    _permission: 'access content'
+
+
 php_cl_demo_module.settings_form:
   path: '/admin/config/system/php-cl-demo-module'
   defaults:
