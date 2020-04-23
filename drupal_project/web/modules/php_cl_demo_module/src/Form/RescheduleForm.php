@@ -11,10 +11,11 @@ class RescheduleForm extends FormBase
 {
 
     const SUCCESS_FORM     = 'SUCCESS: form submitted successfully';
+    const SUCCESS_DEL      = 'SUCCESS: event deleted successfully';
     const ERROR_FORM       = 'ERROR: unable to submit form';
     const ERROR_KEY        = 'ERROR: invalid event key';
-    const ERROR_DATE       = 'ERROR: invalid event date; date must be in this format: YYYY-MM-DD';
-    const ERROR_TIME       = 'ERROR: invalid event date; time must be in this format: HH:MM:SS';
+    const ERROR_DATE       = 'ERROR: date must be in this format: "YYYY-MM-DD"';
+    const ERROR_TIME       = 'ERROR: time must be in this format: "HH:MM:SS"';
 
     /**
      * Returns a unique string identifying the form.
@@ -51,17 +52,30 @@ class RescheduleForm extends FormBase
                 '#required' => TRUE,
                 '#value_callback'   => [ $stripTags, $toUpper ],
             ],
-            'event_date' => [
+            // docs: https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Datetime!Element!Datetime.php/function/Datetime%3A%3AprocessDatetime/9.0.x
+            'event_date_date' => [
                 '#title'    => $this->t('Event Date'),
-                '#type'     => 'datetime',
-                '#attributes' => ['placeholder' => t('YYYY-MM-DD')],
+                '#type'     => 'date',
                 '#required' => TRUE,
-                '#value_callback'   => [ $stripTags ],
+                '#default_value' => date('Y-m-d'),
+                '#value_callback'    => [ $stripTags ],
+            ],
+            'event_date_time' => [
+                '#title'    => $this->t('Event Time'),
+                '#type'     => 'textfield',
+                '#required' => TRUE,
+                '#default_value' => date('H:i:s'),
+                '#value_callback'    => [ $stripTags ],
             ],
             'submit' => [
                 '#title'    => $this->t('Submit'),
                 '#type'     => 'submit',
                 '#value'    => $this->t('Submit'),
+            ],
+            'delete' => [
+                '#title'    => $this->t('Delete'),
+                '#type'     => 'submit',
+                '#value'    => $this->t('Delete'),
             ],
         ];
         return $form;
@@ -78,36 +92,24 @@ class RescheduleForm extends FormBase
     public function validateForm(array &$form, FormStateInterface $form_state)
     {
         // code to validate submitted form data
-        $validators = [
-            // example: 'FLO-RES-YR-406'
-            'event_key' => function ($key, $form_state) {
-                $pattern = '/^[A-Z]{3}-[A-Z]{3}-[A-Z]{2}-\d{3}$/';
-                if (!preg_match($pattern, $key)) {
-                    $form_state->setErrorByName('event_key', $this->t(self::ERROR_KEY));
-                }
-            },
-            // example: '2020-11-14 00:00:00'
-            'event_date' => function ($date, $form_state) {
-                $expected = 2;
-                $actual   = 0;
-                if (!preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $date['date'])) {
-                    $form_state->setErrorByName('event_date', $this->t(self::ERROR_DATE));
-                } else {
-                    $actual++;
-                }
-                if (!preg_match('/^\d{2}:\d{2}:\d{2}$/', $date['time'])) {
-                    $form_state->setErrorByName('event_date', $this->t(self::ERROR_TIME));
-                } else {
-                    $actual++;
-                }
-                if ($expected !== $actual) {
-                    error_log(__METHOD__ . ':DATE:' . var_export($date, TRUE));
-                }
-            },
-        ];
-        foreach ($form_state->getValues() as $key => $item) {
-            if (isset($validators[$key]))
-                $validators[$key]($item, $form_state);
+        // example: 'FLO-RES-YR-406'
+        $pattern = '/^[A-Z]{3}-[A-Z]{3}-[A-Z]{2}-\d{3}$/';
+        if (!preg_match($pattern, $form_state->getValue('event_key'))) {
+            $form_state->setErrorByName('event_key', $this->t(self::ERROR_KEY));
+        }
+        // example: '2020-11-14 00:00:00'
+        $expected = 2;
+        $actual   = 0;
+        $ptnDate  = '/^\d{4}\-\d{2}\-\d{2}$/';
+        $ptnTime  = '/^\d{2}:\d{2}:\d{2}$/';
+        $date     = $form_state->getValue('event_date_date');
+        $time     = $form_state->getValue('event_date_time');
+        $actual   += (int) preg_match($ptnDate, $date);
+        $actual   += (int) preg_match($ptnTime, $time);
+        if ($expected != $actual) {
+            $form_state->setErrorByName('event_date_date', $this->t(self::ERROR_DATE));
+            $form_state->setErrorByName('event_date_time', $this->t(self::ERROR_TIME));
+            error_log(__METHOD__ . ':DATE:' . var_export($form_state->getValues(), TRUE));
         }
     }
 
@@ -116,33 +118,45 @@ class RescheduleForm extends FormBase
      *
      * @param array $form
      *   An associative array containing the structure of the form.
-     * @param \Drupal\Core\Form\FormStateInterface $form_state
+     * @param \Drupal\Core\Form\FormStateInterface $state
      *   The current state of the form.
      */
-    public function submitForm(array &$form, FormStateInterface $form_state)
+    public function submitForm(array &$form, FormStateInterface $state)
     {
-        $conn   = Database::getConnection('default', 'jumpstart');
+        $conn = Database::getConnection('default', 'jumpstart');
         // lookup event key
-        $key = $form_state->getValue('event_key');
-        $date = $form_state->getValue('event_date');
+        $key  = $state->getValue('event_key');
+        $date = $state->getValue('event_date_date')
+              . ' ' . $state->getValue('event_date_time');
         $select = $conn->select('events', 'e');
         $select->fields('e', ['event_name','event_date']);
         $select->condition('e.event_date', $date, '=');
         $result = FALSE;
         $stmt   = $select->execute();
         // only proceed if event key is found
-        if ($stmt && $stmt->rowCount()) {
-            // perform database update
-            $result = $conn->update('events')
-                           ->fields(['event_date' => $date])
-                           ->condition('event_key', $key, '=')
-                           ->execute();
-        }
-        if ($result) {
-            $this->messenger()->addStatus($this->t(self::SUCCESS_FORM));
-        } else {
-            $this->messenger()->addStatus($this->t(self::ERROR_FORM));
-            error_log(__METHOD__ . ':KEY:' . $key . ':DATE:' . var_export($date, TRUE));
+        if ($stmt) {
+            // check to see if delete button pressed
+            if ($state->getValue('delete', NULL)) {
+                $result = $conn->delete('events')
+                               ->condition('event_key', $key, '=')
+                               ->execute();
+                if ($result) {
+                    $this->messenger()->addStatus($this->t(self::SUCCESS_DEL));
+                }
+                error_log(__METHOD__ . ':DELETE:' . var_export($state->getValues(), TRUE));
+            } else {
+                // perform database update
+                $result = $conn->update('events')
+                               ->fields(['event_date' => $date])
+                               ->condition('event_key', $key, '=')
+                               ->execute();
+                if ($result) {
+                    $this->messenger()->addStatus($this->t(self::SUCCESS_FORM));
+                } else {
+                    $this->messenger()->addStatus($this->t(self::ERROR_FORM));
+                    error_log(__METHOD__ . ':KEY:' . $key . ':DATE:' . var_export($date, TRUE));
+                }
+            }
         }
     }
 

@@ -180,7 +180,7 @@ class PhpClDemoModuleController extends ControllerBase
         $offset = (int) $page * $limit;
         $conn = Database::getConnection('default', 'jumpstart');
         $select = $conn->select('events', 'e');
-        $select->fields('e', ['event_name','event_date','hotel_id']);
+        $select->fields('e', ['event_key','event_date','hotel_id']);
         $select->join('hotels','h','e.hotel_id = h.id');
         $select->fields('h', ['hotelName','city','country']);
         $select->orderBy('e.event_date', 'ASC');
@@ -218,7 +218,7 @@ class PhpClDemoModuleController extends ControllerBase
         $offset = (int) $page * $limit;
         $conn = Database::getConnection('default', 'jumpstart');
         $select = $conn->select('events', 'e');
-        $select->fields('e', ['event_name','event_date']);
+        $select->fields('e', ['event_key','event_name','event_date']);
         $select->orderBy('e.event_date', 'ASC');
         $select->range($offset, $limit);
         $select->condition('e.event_date', $start_date, '>=');
@@ -227,8 +227,8 @@ class PhpClDemoModuleController extends ControllerBase
         $output .= '<hr><pre>';
         #error_log(__METHOD__ . ':SQL: ' . $select);
         #error_log(__METHOD__ . ':Placeholders: ' . var_export($select->getArguments(), TRUE));
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $output .= sprintf('%30s | %20s' . PHP_EOL, $row['event_name'], $row['event_date']);
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            $output .= vsprintf('%16s | %30s | %20s' . PHP_EOL, $row);
         }
         $url = '/php-cl-demo-module/db-dynamic-query-simple-condition/'
              . ++$page . '/' . $start_date . '/' . $end_date;
