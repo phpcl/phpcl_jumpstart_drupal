@@ -65,7 +65,8 @@ class PhpClDemoModuleController extends ControllerBase
         . '<br><a href="/php-cl-demo-module/db-simple-query">Simple DB Query</a>'
         . '<br><a href="/php-cl-demo-module/db-dynamic-query">Dynamic DB Query</a>'
         . '<br><a href="/php-cl-demo-module/db-dynamic-query-simple-condition/0/' . $dates['start'] . '/' . $dates['stop'] . '">Dynamic Query Simple Condition</a>'
-        . '<br><a href="/php-cl-demo-module/test/get-params">Grab Parameters</a>';
+        . '<br><a href="/php-cl-demo-module/test/get-params">Grab Parameters</a>'
+        . '<br><a href="/php-cl-demo-module/use-config">Use Default Config</a>';
 
     $build['content'] = [
       '#type' => 'item',
@@ -243,4 +244,25 @@ class PhpClDemoModuleController extends ControllerBase
     ];
     return $build;
   }
+
+  /**
+   * Demonstrates accessing default config params stored in:
+   * php_cl_demo_module/config/install/php_cl_demo_module.settings.yml
+   */
+  public function use_config()
+  {
+    $config  = \Drupal::config('php_cl_demo_module.settings');
+    $settings = ['company','website','contact'];
+    $output  = '<table>';
+    foreach ($settings as $item) {
+        $output .= '<tr><th>' . ucfirst($item) . '</th><td>';
+        $output .= $config->get($item);
+        $output .= '</td></tr>';
+    }
+    $output .= '</table>';
+    $build['content'] = ['#type' => 'item','#markup' => $output];
+    return $build;
+  }
+
+
 }

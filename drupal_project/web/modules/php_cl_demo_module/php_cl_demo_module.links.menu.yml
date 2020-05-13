@@ -5,3 +5,16 @@ php_cl_demo_module.menu_test:
     menu_name: main
     weight: 100
     enabled: 1
+
+php_cl_demo_module.settings:
+  title: PHP-CL Demo Module Settings
+  description: PHP-CL Demo Module Settings
+  parent: system.admin_config_system
+  route_name: php_cl_demo_module.settings
+  weight: 10
+
+php_cl_demo_module.settings:
+  title: Settings
+  description: PHP-CL Demo Module Settings
+  route_name: php_cl_demo_module.settings
+  weight: 10

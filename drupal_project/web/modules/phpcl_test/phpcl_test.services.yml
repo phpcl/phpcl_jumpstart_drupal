@@ -1,0 +1,6 @@
+services:
+  phpcl_test.event_subscriber:
+    class: Drupal\phpcl_test\EventSubscriber\PhpclTestSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }

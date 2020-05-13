@@ -1,0 +1,4 @@
+administer phpcl_test configuration:
+  title: 'Administer phpcl_test configuration'
+  description: 'Optional description.'
+  restrict access: true

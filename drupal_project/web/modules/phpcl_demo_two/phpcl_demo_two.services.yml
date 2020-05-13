@@ -1,0 +1,6 @@
+services:
+  phpcl_demo_two.event_subscriber:
+    class: Drupal\phpcl_demo_two\EventSubscriber\PhpclDemoTwoSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }

@@ -1,0 +1,4 @@
+administer phpcl_demo_two configuration:
+  title: 'Administer phpcl_demo_two configuration'
+  description: 'Optional description.'
+  restrict access: true

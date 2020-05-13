@@ -1,0 +1,6 @@
+name: phpcl_test
+type: module
+description: PHP-CL JumpStart:Drupal Module Development Test Module
+package: Custom
+core: 8.x
+core_version_requirement: ^8 || ^9

@@ -1,0 +1,15 @@
+phpcl_test.example:
+  path: '/phpcl-test/example'
+  defaults:
+    _title: 'Example'
+    _controller: '\Drupal\phpcl_test\Controller\PhpclTestController::build'
+  requirements:
+    _permission: 'access content'
+
+phpcl_test.settings_form:
+  path: '/admin/config/system/phpcl-test'
+  defaults:
+    _title: 'phpcl_test settings'
+    _form: 'Drupal\phpcl_test\Form\SettingsForm'
+  requirements:
+    _permission: 'administer phpcl_test configuration'
