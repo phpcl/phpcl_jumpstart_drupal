@@ -6,7 +6,6 @@ services:
     image: phpcl/jumpstart_drupal
     volumes:
      - ".:/srv/jumpstart"
-     - "./docker/hosts:/etc/hosts"
     ports:
      - "8899:80"
      - "9443:443"
